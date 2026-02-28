@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Emoji Guess Game</title>
+</head>
+<body>
+    <h1>Emoji Guessing Game 🎮</h1>
+
+    <h2 id="emoji"></h2>
+
+    <form id="gameForm">
+        <div id="options"></div>
+        <br />
+        <input type="text" id="username" placeholder="Your name" required />
+        <button type="submit">Submit</button>
+    </form>
+
+    <h3 id="result"></h3>
+    <h3 id="score"></h3>
+
+    <h2>Leaderboard 🏆</h2>
+    <ul id="leaderboard"></ul>
+
+    <script>
+        let currentAnswer = "";
+
+        async function loadQuestion() {
+            const res = await fetch("/api/question");
+            const data = await res.json();
+
+            document.getElementById("emoji").textContent = data.emoji;
+            currentAnswer = data.answer;
+
+            const optionsDiv = document.getElementById("options");
+            optionsDiv.innerHTML = "";
+
+            data.options.forEach(option => {
+                optionsDiv.innerHTML += `
+                    <label>
+                        <input type="radio" name="guess" value="${option}" required />
+                            ${option}
+                    </label><br/>
+                `;
+            });
+        }
+
+        document.getElementById("gameForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const guess = document.querySelector('input[name="guess"]:checked').value;
+            const username = document.getElementById("username").value;
+
+            const res = await fetch("/api/guess", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ guess, answer: currentAnswer, username })
+            });
+
+            const data = await res.json();
+
+            document.getElementById("result").textContent = data.correct ? "Correct!" : "Wrong!";
+
+            document.getElementById("score").textContent =    "Score: " + data.score;
+
+            const leaderboard = document.getElementById("leaderboard");
+            leaderboard.innerHTML = "";
+            data.leaderboard.forEach(player => {
+                leaderboard.innerHTML += `<li>${player.username}: ${player.score}</li>`;
+            });
+
+            loadQuestion();
+        });
+
+        loadQuestion();
+    </script>
+</body>
+</html>
