@@ -1,14 +1,12 @@
-// ====== Part 1: Quotes Array & Generate Quote ======
 let quotes = [
     { id: 0, author: "Albert Einstein", quote: "Life is like riding a bicycle. To keep your balance you must keep moving.", likes: 0 },
     { id: 1, author: "Yoda", quote: "Do or do not. There is no try.", likes: 0 },
     { id: 2, author: "Oscar Wilde", quote: "Be yourself; everyone else is already taken.", likes: 0 },
   ];
   
-  let lastIndex = -1; // to avoid showing the same quote twice
+  let lastIndex = -1; 
   const container = document.querySelector("section");
   
-  // display a quote object
   function displayQuote(q) {
     container.innerHTML = `
       <p id="quoteText">${q.quote}</p>
@@ -21,7 +19,6 @@ let quotes = [
       </div>
     `;
   
-    // Stats buttons
     document.getElementById("charWithSpaces").onclick = () => alert(q.quote.length);
     document.getElementById("charWithoutSpaces").onclick = () => alert(q.quote.replace(/\s/g, "").length);
     document.getElementById("wordCount").onclick = () => alert(q.quote.trim().split(/\s+/).length);
@@ -31,7 +28,6 @@ let quotes = [
     };
   }
   
-  // generate random quote
   document.getElementById("generateQuote").onclick = () => {
     let index;
     do {
@@ -41,7 +37,6 @@ let quotes = [
     displayQuote(quotes[index]);
   };
   
-  // ====== Part 2: Add New Quote ======
   document.getElementById("addQuoteForm").onsubmit = (e) => {
     e.preventDefault();
     const quoteInput = document.getElementById("newQuote").value.trim();
@@ -59,7 +54,6 @@ let quotes = [
     alert("Quote added!");
   };
   
-  // ====== Part 3: Filter by Author ======
   let filteredQuotes = [];
   let currentFilteredIndex = 0;
   
@@ -75,7 +69,6 @@ let quotes = [
     displayQuote(filteredQuotes[currentFilteredIndex]);
   };
   
-  // Previous / Next navigation for filtered quotes
   document.getElementById("prevQuote").onclick = () => {
     if (filteredQuotes.length === 0) return;
     currentFilteredIndex = (currentFilteredIndex - 1 + filteredQuotes.length) % filteredQuotes.length;
